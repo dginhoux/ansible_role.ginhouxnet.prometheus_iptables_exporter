@@ -1,0 +1,12 @@
+---
+- name: stop iptables_exporter container
+  community.docker.docker_container:
+    name: iptables_exporter
+    state: stopped
+  ignore_errors: true
+
+- name: remove iptables_exporter container
+  community.docker.docker_container:
+    name: iptables_exporter
+    state: absent
+  ignore_errors: true
