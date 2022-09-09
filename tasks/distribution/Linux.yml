@@ -1,18 +1,17 @@
 ---
 - name: "install {{ prometheus_iptables_exporter_name }}"
   block:
-
     - include_tasks:
         file: tasks/sub-tasks/install_docker.yml
       when: deploy_iptables_exporter_mode is defined
-            and
-            deploy_iptables_exporter_mode == "docker"
+        and
+        deploy_iptables_exporter_mode == "docker"
 
     - include_tasks:
         file: tasks/sub-tasks/install_binary.yml
       when: deploy_iptables_exporter_mode is defined
-            and
-            deploy_iptables_exporter_mode == "binary"
+        and
+        deploy_iptables_exporter_mode == "binary"
 
     - name: "verify {{ prometheus_iptables_exporter_name }} is responding to requests"
       uri:
@@ -24,25 +23,23 @@
       delay: 60
 
   when: deploy_iptables_exporter is defined
-        and
-        deploy_iptables_exporter == "install"
-
+    and
+    deploy_iptables_exporter == "install"
 
 - name: "uninstall {{ prometheus_iptables_exporter_name }}"
   block:
-
     - include_tasks:
         file: tasks/sub-tasks/uninstall_docker.yml
       when: deploy_iptables_exporter_mode is defined
-            and
-            deploy_iptables_exporter_mode == "docker"
+        and
+        deploy_iptables_exporter_mode == "docker"
 
     - include_tasks:
         file: tasks/sub-tasks/uninstall_binary.yml
       when: deploy_iptables_exporter_mode is defined
-            and
-            deploy_iptables_exporter_mode == "binary"
+        and
+        deploy_iptables_exporter_mode == "binary"
 
   when: deploy_iptables_exporter is defined
-        and
-        deploy_iptables_exporter == "uninstall"
+    and
+    deploy_iptables_exporter == "uninstall"

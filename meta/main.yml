@@ -1,5 +1,4 @@
 ---
-
 galaxy_info:
   role_name: prometheus_iptables_exporter
   description: install prometheus iptables_exporter and configure prometheus iptables_exporter
@@ -26,6 +25,5 @@ galaxy_info:
     - prometheus
     - iptables
     - exporter
-
 
 dependencies: []
