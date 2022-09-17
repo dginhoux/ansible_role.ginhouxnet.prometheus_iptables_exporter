@@ -1,25 +1,25 @@
 ---
 - name: "check current {{ prometheus_iptables_exporter_name }} version"
-  stat:
+  ansible.builtin.stat:
     path: "{{ prometheus_iptables_exporter_bin_path }}"
   failed_when: false
   changed_when: false
   register: prometheus_iptables_exporter_bin_stat
 
 - name: "check current {{ prometheus_iptables_exporter_name }} version"
-  command: "{{ prometheus_iptables_exporter_bin_path }} --version"
+  ansible.builtin.command: "{{ prometheus_iptables_exporter_bin_path }} --version"
   failed_when: false
   changed_when: false
   register: prometheus_iptables_exporter_version_check
   when: prometheus_iptables_exporter_bin_stat.stat.exists
 
 - name: "stop {{ prometheus_iptables_exporter_name }}"
-  service:
+  ansible.builtin.service:
     name: "{{ prometheus_iptables_exporter_name }}"
     state: stopped
     enabled: no
   when: prometheus_iptables_exporter_bin_stat.stat.exists
-- debug:
+- ansible.builtin.debug:
     var: prometheus_iptables_exporter_download_url
 - name: "download and decompress {{ prometheus_iptables_exporter_name }} into temporary location"
   unarchive:
@@ -33,7 +33,7 @@
     prometheus_iptables_exporter_version not in prometheus_iptables_exporter_version_check.stdout
 
 - name: "move {{ prometheus_iptables_exporter_name }} binary into place"
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/{{ prometheus_iptables_exporter_name }}"
     dest: "{{ prometheus_iptables_exporter_bin_path }}"
     mode: 0755
@@ -47,11 +47,11 @@
 - name: "create {{ prometheus_iptables_exporter_name }} user"
   user:
     name: "{{ prometheus_iptables_exporter_name }}"
-    shell: /sbin/nologin
+    ansible.builtin.shell: /sbin/nologin
     state: present
 
 - name: "create {{ prometheus_iptables_exporter_name }} systemd unit file"
-  template:
+  ansible.builtin.template:
     src: exporter.service.j2
     dest: /etc/systemd/system/{{ prometheus_iptables_exporter_name }}.service
     mode: 0644
@@ -60,7 +60,7 @@
   when: ansible_service_mgr == "systemd"
 
 - name: "create {{ prometheus_iptables_exporter_name }} sysv init file"
-  template:
+  ansible.builtin.template:
     src: exporter.j2
     dest: /etc/init.d/{{ prometheus_iptables_exporter_name }}
     mode: 0644
@@ -69,17 +69,17 @@
   when: ansible_service_mgr == "sysvinit"
 
 # - name: "sysvinit enable"
-#   shell:
+#   ansible.builtin.shell:
 #     cmd: "chkconfig {{ prometheus_iptables_exporter_name }} on"
 #   when: ansible_service_mgr == "sysvinit"
 
 - name: "systemd daemon-reload"
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
   when: ansible_service_mgr == "systemd"
 
 - name: "ensure {{ prometheus_iptables_exporter_name }} is started"
-  service:
+  ansible.builtin.service:
     name: "{{ prometheus_iptables_exporter_name }}"
     enabled: yes
     state: started
