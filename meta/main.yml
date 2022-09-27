@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: prometheus_iptables_exporter
-  description: install prometheus iptables_exporter and configure prometheus iptables_exporter
+  description: dginhoux.prometheus_iptables_exporter
   author: Dany GINHOUX
   company: dginhoux
   license: MIT
