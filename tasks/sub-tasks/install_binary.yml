@@ -18,12 +18,12 @@
     name: "{{ prometheus_iptables_exporter_name }}"
     state: stopped
     enabled: no
+  ignore_errors: true
   when: prometheus_iptables_exporter_bin_stat.stat.exists
-- ansible.builtin.debug:
-    var: prometheus_iptables_exporter_download_url
+
 - name: "download and decompress {{ prometheus_iptables_exporter_name }} into temporary location"
   unarchive:
-    src: "{{ prometheus_iptables_exporter_download_url }}"
+    src: "{{ prometheus_iptables_exporter_download_url | replace(' ','') }}"
     dest: /tmp
     remote_src: true
   when: not prometheus_iptables_exporter_bin_stat.stat.exists
@@ -47,7 +47,7 @@
 - name: "create {{ prometheus_iptables_exporter_name }} user"
   user:
     name: "{{ prometheus_iptables_exporter_name }}"
-    ansible.builtin.shell: /sbin/nologin
+    shell: /sbin/nologin
     state: present
 
 - name: "create {{ prometheus_iptables_exporter_name }} systemd unit file"
