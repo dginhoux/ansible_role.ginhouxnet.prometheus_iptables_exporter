@@ -7,6 +7,7 @@
     path: "{{ prometheus_iptables_exporter_bin_path }}"
 
 - name: Check current iptables_exporter version
+  become: true
   when: prometheus_iptables_exporter_bin_stat.stat.exists
   failed_when: false
   changed_when: false
@@ -35,6 +36,7 @@
     remote_src: true
 
 - name: Move iptables_exporter binary into place
+  become: true
   when:
     not prometheus_iptables_exporter_bin_stat.stat.exists
     or
@@ -48,12 +50,14 @@
     remote_src: true
 
 - name: Create iptables_exporter user
+  become: true
   ansible.builtin.user:
     name: "{{ prometheus_iptables_exporter_name }}"
     shell: /sbin/nologin
     state: present
 
 - name: Create iptables_exporter systemd unit file
+  become: true
   when: ansible_service_mgr == "systemd"
   ansible.builtin.template:
     src: exporter.service.j2
@@ -63,6 +67,7 @@
     group: root
 
 - name: Create iptables_exporter sysv init file
+  become: true
   when: ansible_service_mgr == "sysvinit"
   ansible.builtin.template:
     src: exporter.j2
@@ -77,11 +82,13 @@
 #     cmd: "chkconfig {{ prometheus_iptables_exporter_name }} on"
 
 - name: Systemd daemon-reload
+  become: true
   when: ansible_service_mgr == "systemd"
   ansible.builtin.systemd:
     daemon_reload: true
 
 - name: Ensure iptables_exporter is started
+  become: true
   ansible.builtin.service:
     name: "{{ prometheus_iptables_exporter_name }}"
     enabled: true
